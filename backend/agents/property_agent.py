@@ -6,19 +6,11 @@ from google.genai.types import GenerateContentConfig
 logger = logging.getLogger(__name__)
 
 def process_property_issue(query: str, image_bytes: bytes, combined_context: str = "", mime_type: str = "image/jpeg") -> str:
-    """
-    Processes a property issue query by sending both text and an image to the Gemini model.
+    if not image_bytes:
+        logger.info("No image provided, processing as text-only follow-up")
+        return process_property_issue_without_image(query, combined_context)
 
-    Args:
-        query (str): The textual component of the user query.
-        image_bytes (bytes): Raw bytes of the uploaded image.
-        combined_context (str): Context from previous conversation + RAG.
-        mime_type (str): The MIME type of the image.
-
-    Returns:
-        str: Response from the Gemini model.
-    """
-    logger.info("Starting process_property_issue")
+    logger.info("Starting process_property_issue with image")
 
     image_stream = io.BytesIO(image_bytes)
 
@@ -40,7 +32,7 @@ def process_property_issue(query: str, image_bytes: bytes, combined_context: str
     logger.info("Constructed prompt for property issue")
 
     try:
-        logger.info("Generating response using Gemini model for property issue")
+        logger.info("Generating response using Gemini model for property issue with image")
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[prompt, uploaded_file],
@@ -50,7 +42,36 @@ def process_property_issue(query: str, image_bytes: bytes, combined_context: str
                 ]
             ),
         )
-        logger.info("Response generated successfully for property issue")
+        logger.info("Response generated successfully for property issue with image")
+        return response.text
+    except Exception as e:
+        logger.exception("Property Agent generation failed")
+        raise Exception(f"Property Agent generation failed: {str(e)}")
+
+def process_property_issue_without_image(query: str, combined_context: str = "") -> str:
+    """
+    Handles follow-up property issue queries without an image.
+    """
+    logger.info("Processing property issue follow-up without image")
+
+    prompt = (
+        f"Conversation History and Context:\n{combined_context}\n"
+        f"User Query: {query}\n"
+        "Provide troubleshooting steps and recommendations related to the property issue based on the previous context."
+    )
+
+    try:
+        logger.info("Generating response using Gemini model for property issue without image")
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[prompt],
+            config=GenerateContentConfig(
+                system_instruction=[
+                    "You're a property damage resolvent agent, analyse the image and provide a solution response, but limit the response size to a 100 words, you can give a small response but dont increase it more than 100 words.",
+                ]
+            ),
+        )
+        logger.info("Response generated successfully for property issue without image")
         return response.text
     except Exception as e:
         logger.exception("Property Agent generation failed")

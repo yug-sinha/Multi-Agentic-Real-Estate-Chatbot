@@ -10,8 +10,9 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
-# Temporary in-memory session-based conversation store
+# In-memory store for conversation history and last used agent per user
 session_conversations = {}
+session_last_agent = {}
 
 @app.post("/chat")
 async def chat_endpoint(
@@ -20,12 +21,13 @@ async def chat_endpoint(
     file: UploadFile = File(None)
 ):
     """
-    Handle user queries with conversation history context.
+    Handle user queries with conversation history context and smart agent routing.
     """
-    client_ip = request.client.host  # using client IP for identifying the user session
+    client_ip = request.client.host  # Identify user session via IP
 
     if client_ip not in session_conversations:
         session_conversations[client_ip] = []
+        session_last_agent[client_ip] = None
 
     logger.info("Received /chat request with query: %s", query)
 
@@ -35,34 +37,51 @@ async def chat_endpoint(
     for item in conversation_history:
         history_context += f"User: {item['query']}\nAgent: {item['response']}\n"
 
-    # Retrieve additional RAG context
+    # RAG context
     additional_context = retrieve_context(query)
     logger.info("Retrieved additional RAG context: %s", additional_context)
 
     combined_context = f"{history_context}\n{additional_context}"
 
+    # Routing Logic:
+    # If file is provided -> Always Property Agent
+    # Else -> Use last agent if exists, else fallback to Tenancy Agent
+    use_agent = None
+
     if file is not None:
-        logger.info("File received: %s", file.filename)
-        file_bytes = await file.read()
-        mime_type = file.content_type
-        logger.info("File MIME type: %s", mime_type)
+        use_agent = "Property Agent"
+    elif session_last_agent[client_ip] is not None:
+        use_agent = session_last_agent[client_ip]
+    else:
+        use_agent = "Tenancy Agent"
+
+    logger.info("Selected Agent for this query: %s", use_agent)
+
+    if use_agent == "Property Agent":
+        logger.info("File provided or continuing with Property Agent")
+        if file is None:
+            file_bytes = b''  # Empty byte file for follow-up without file
+            mime_type = "image/jpeg"
+        else:
+            file_bytes = await file.read()
+            mime_type = file.content_type
+            logger.info("File MIME type: %s", mime_type)
 
         try:
             response_text = property_agent.process_property_issue(query, file_bytes, combined_context, mime_type)
-            agent_name = "Property Agent"
-            logger.info("Property Agent response generated successfully")
         except Exception as e:
-            logger.exception("Error in Property Agent processing")
+            logger.exception("Error in Property Agent")
             raise HTTPException(status_code=500, detail=str(e))
     else:
-        logger.info("Processing Tenancy Agent query")
+        logger.info("Processing with Tenancy Agent")
         try:
             response_text = tenancy_agent.process_tenancy_query(query, combined_context)
-            agent_name = "Tenancy Agent"
-            logger.info("Tenancy Agent response generated successfully")
         except Exception as e:
-            logger.exception("Error in Tenancy Agent processing")
+            logger.exception("Error in Tenancy Agent")
             raise HTTPException(status_code=500, detail=str(e))
+
+    # Save latest agent used
+    session_last_agent[client_ip] = use_agent
 
     # Update conversation history
     session_conversations[client_ip].append({
@@ -70,7 +89,7 @@ async def chat_endpoint(
         "response": response_text
     })
 
-    return JSONResponse(content={"agent": agent_name, "response": response_text})
+    return JSONResponse(content={"agent": use_agent, "response": response_text})
 
 
 if __name__ == "__main__":
