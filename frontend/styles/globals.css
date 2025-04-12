@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-[#0d0d0d] text-gray-100;
+}
+
+* {
+  scroll-behavior: smooth;
+}

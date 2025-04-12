@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+google-genai  # or the specific package name for the Gemini SDK if different
+python-multipart
