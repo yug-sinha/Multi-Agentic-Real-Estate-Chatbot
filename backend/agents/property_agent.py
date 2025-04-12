@@ -5,41 +5,40 @@ from google.genai.types import GenerateContentConfig
 
 logger = logging.getLogger(__name__)
 
-def process_property_issue(query: str, image_bytes: bytes, additional_context: str = "", mime_type: str = "image/jpeg") -> str:
+def process_property_issue(query: str, image_bytes: bytes, combined_context: str = "", mime_type: str = "image/jpeg") -> str:
     """
     Processes a property issue query by sending both text and an image to the Gemini model.
-    
+
     Args:
         query (str): The textual component of the user query.
         image_bytes (bytes): Raw bytes of the uploaded image.
-        additional_context (str): Optional context from a RAG retrieval process.
-        mime_type (str): The MIME type of the image, e.g., "image/jpeg".
-        
+        combined_context (str): Context from previous conversation + RAG.
+        mime_type (str): The MIME type of the image.
+
     Returns:
-        str: The response from the Gemini model.
+        str: Response from the Gemini model.
     """
     logger.info("Starting process_property_issue")
-    # Wrap image bytes in a stream for uploading.
+
     image_stream = io.BytesIO(image_bytes)
+
     try:
         logger.info("Uploading image with MIME type: %s", mime_type)
-        # Pass the MIME type when uploading the file.
         uploaded_file = client.files.upload(file=image_stream, config={"mime_type": mime_type})
-        logger.info("Image uploaded successfully.")
+        logger.info("Image uploaded successfully")
     except Exception as e:
         logger.exception("Image upload failed")
         raise Exception(f"Image upload failed: {str(e)}")
-    
-    # Construct the prompt including context and query.
+
     prompt = (
-        f"Context: {additional_context}\n"
+        f"Conversation History and Context:\n{combined_context}\n"
         f"User Query: {query}\n"
         "Analyze the provided image for property issues (e.g., water damage, mold, cracks, poor lighting, broken fixtures). "
-        "Return a troubleshooting diagnosis and recommendations"
+        "Return a troubleshooting diagnosis and recommendations."
     )
-    logger.info("Prompt constructed for property issue: %s", prompt)
-    
-    # Generate the response using the Gemini model.
+
+    logger.info("Constructed prompt for property issue")
+
     try:
         logger.info("Generating response using Gemini model for property issue")
         response = client.models.generate_content(
@@ -54,5 +53,5 @@ def process_property_issue(query: str, image_bytes: bytes, additional_context: s
         logger.info("Response generated successfully for property issue")
         return response.text
     except Exception as e:
-        logger.exception("Property agent generation failed")
-        raise Exception(f"Property agent generation failed: {str(e)}")
+        logger.exception("Property Agent generation failed")
+        raise Exception(f"Property Agent generation failed: {str(e)}")

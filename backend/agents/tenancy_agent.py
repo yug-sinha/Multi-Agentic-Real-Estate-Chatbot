@@ -6,37 +6,30 @@ from google.genai.types import GenerateContentConfig
 
 logger = logging.getLogger(__name__)
 
-# Define the prompt template for tenancy FAQ queries using RAG.
 TENANCY_PROMPT_TEMPLATE = (
     "You are a legal and property management expert specializing in tenancy laws and rental agreements.\n"
-    "Retrieved Context: {context}\n"
+    "Conversation History and Context: {context}\n"
     "User Query: {query}\n"
     "Provide a comprehensive, legally informed answer including any necessary legal conditions and practical advice. "
     "If relevant, ask if more location-specific information is needed."
 )
 
-def process_tenancy_query(query: str) -> str:
+def process_tenancy_query(query: str, combined_context: str = "") -> str:
     """
-    Processes tenancy-related queries using a Retrieval-Augmented Generation approach.
-    
+    Processes tenancy-related queries using context and RAG.
+
     Args:
         query (str): The tenancy-related question from the user.
-        
+        combined_context (str): Context from conversation history + RAG.
+
     Returns:
-        str: The generated answer from the tenancy agent.
+        str: Generated response from the tenancy agent.
     """
     logger.info("Starting process_tenancy_query with query: %s", query)
-    try:
-        context = retrieve_context(query)
-        logger.info("Retrieved context for tenancy query: %s", context)
-    except Exception as e:
-        logger.exception("Failed to retrieve context")
-        raise Exception(f"Context retrieval failed: {str(e)}")
-    
-    # Fill the prompt template with the retrieved context.
-    prompt = TENANCY_PROMPT_TEMPLATE.format(context=context, query=query)
-    logger.info("Constructed prompt for tenancy query: %s", prompt)
-    
+
+    prompt = TENANCY_PROMPT_TEMPLATE.format(context=combined_context, query=query)
+    logger.info("Constructed prompt for tenancy query")
+
     try:
         logger.info("Generating response using Gemini model for tenancy query")
         response = client.models.generate_content(
@@ -51,5 +44,5 @@ def process_tenancy_query(query: str) -> str:
         logger.info("Tenancy response generated successfully")
         return response.text
     except Exception as e:
-        logger.exception("Tenancy agent generation failed")
-        raise Exception(f"Tenancy agent generation failed: {str(e)}")
+        logger.exception("Tenancy Agent generation failed")
+        raise Exception(f"Tenancy Agent generation failed: {str(e)}")
