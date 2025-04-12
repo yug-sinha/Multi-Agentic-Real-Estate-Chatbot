@@ -37,7 +37,7 @@ def process_tenancy_query(query: str, combined_context: str = "") -> str:
             contents=[prompt],
             config=GenerateContentConfig(
                 system_instruction=[
-                    "You're a property tenancy FAQ agent, analyse the image and provide a solution response, but limit the response size to a 100 words, you can give a small response but dont increase it more than 100 words.",
+                    "You're a property tenancy FAQ agent, analyse the issue and give a solution response, but limit the response size to a 100 words, you can give a small response but dont increase it more than 100 words.",
                 ]
             ),
         )
