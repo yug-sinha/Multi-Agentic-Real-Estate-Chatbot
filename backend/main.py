@@ -91,6 +91,13 @@ async def chat_endpoint(
 
     return JSONResponse(content={"agent": use_agent, "response": response_text})
 
+@app.post("/reset")
+async def reset_conversation(request: Request):
+    client_ip = request.client.host
+    session_conversations.pop(client_ip, None)
+    session_last_agent.pop(client_ip, None)
+    logger.info("Reset conversation for user: %s", client_ip)
+    return JSONResponse(content={"message": "Conversation history cleared."})
 
 if __name__ == "__main__":
     logger.info("Starting FastAPI server at http://0.0.0.0:8000")
