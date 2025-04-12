@@ -55,6 +55,10 @@ export default function HomePage() {
     }
   }
 
+  const handleReset = () => {
+    setMessages([])
+  }
+
   useEffect(() => {
     chatContainerRef.current?.scrollTo({
       top: chatContainerRef.current.scrollHeight,
@@ -85,7 +89,8 @@ export default function HomePage() {
         )}
       </div>
 
-      <ChatInput onSend={handleSend} />
+      <ChatInput onSend={handleSend} onReset={handleReset} />
     </main>
   )
 }
+  
