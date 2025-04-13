@@ -16,7 +16,7 @@ EXPOSE 8000
 
 # OPTIONAL: Copy your .env if you'd rather bake it into the container
 # Otherwise you can mount it in at runtime
-COPY .env /app/
+# COPY .env /app/
 
 # Run the FastAPI app with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
