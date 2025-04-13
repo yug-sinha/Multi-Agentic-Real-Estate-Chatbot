@@ -1,4 +1,3 @@
-```markdown
 # Multi-Agentic Real Estate Copilot
 
 This repository contains a multi-agent real estate chatbot application that uses FastAPI (Python) for the backend and Next.js (TypeScript) for the frontend. The application can analyze property images for damage, answer tenancy-related questions, and provide context-driven responses.
