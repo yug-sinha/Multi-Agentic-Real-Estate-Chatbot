@@ -87,10 +87,10 @@ Multi-Agentic-Real-Estate-Chatbot
 
 Create a `.env` file in `backend/` (for local dev) with:
 ```
-GEMINI_API_KEY=<YOUR_PALM_API_KEY>
+GEMINI_API_KEY=<YOUR_GEMINI_API_KEY>
 ```
 
-- **`GEMINI_API_KEY`** is your Google PaLM / GenAI key.  
+- **`GEMINI_API_KEY`** is your Google Gemini key.  
 - Make sure you **do not** commit `.env` to public source control.  
 
 In **production**, pass this key via environment variables rather than storing in `.env`.
