@@ -208,7 +208,7 @@ Below is a concise **README/Documentation** covering core points of the Multi-Ag
 This chatbot offers property issue detection and tenancy-related advice, leveraging AI-driven logic. It comprises:
 - **Backend**: FastAPI and Python  
 - **Frontend**: Next.js (TypeScript) for the user interface  
-- **AI Services**: Google PaLM API for image-driven analysis  
+- **AI Services**: Google Gemini API for image-driven analysis  
 - **Deployment Options**: Dockerized backend, deployable on Render or similar cloud platforms; frontend deployable on Vercel
 
 ---
@@ -218,7 +218,7 @@ This chatbot offers property issue detection and tenancy-related advice, leverag
 1. **FastAPI (Python)**: Provides REST endpoints to handle user requests.  
 2. **Next.js (TypeScript)**: Frontend for user interaction and chat interface.  
 3. **Docker**: Containerizes the FastAPI backend for consistent deployment.  
-4. **Google PaLM API**: Processes images (upload + analysis) and advanced text generation (property/tenancy insights).  
+4. **Google Gemini API**: Processes images (upload + analysis) and advanced text generation (property/tenancy insights).  
 5. **Tailwind CSS**: For styling the Next.js app quickly and consistently.
 
 ---
@@ -237,7 +237,7 @@ Essentially:
 #### 4. How Image-Based Issue Detection Works
 
 1. **User Uploads an Image**: The frontend sends the image to the FastAPI backend.  
-2. **FastAPI** calls **Google’s PaLM API** to upload and process the file, then requests an AI-driven analysis.  
+2. **FastAPI** calls **Google’s Gemini API** to upload and process the file, then requests an AI-driven analysis.  
 3. **Property Agent** forms a prompt describing the property context and queries the AI model for potential issues, e.g., mold spots, cracks, broken fixtures.  
 4. **Short, Actionable Answer**: The response is limited to around 100 words, providing quick, targeted advice.
 
