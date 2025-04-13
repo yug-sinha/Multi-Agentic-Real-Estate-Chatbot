@@ -1,15 +1,15 @@
 import os
 import logging
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from google import genai
 
 # Configure logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-# Load environment variables from .env file
-load_dotenv()
-logger.info("Environment variables loaded from .env")
+# # Load environment variables from .env file
+# load_dotenv()
+# logger.info("Environment variables loaded from .env")
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
