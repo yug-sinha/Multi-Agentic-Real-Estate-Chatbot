@@ -1,3 +1,4 @@
+```markdown
 # Multi-Agentic Real Estate Copilot
 
 This repository contains a multi-agent real estate chatbot application that uses FastAPI (Python) for the backend and Next.js (TypeScript) for the frontend. The application can analyze property images for damage, answer tenancy-related questions, and provide context-driven responses.
@@ -16,7 +17,8 @@ This repository contains a multi-agent real estate chatbot application that uses
    - [Local Run](#local-run)  
    - [Deploy on Vercel](#deploy-on-vercel)  
 6. [Deployment on Render (Backend)](#deployment-on-render-backend)  
-7. [License](#license)
+7. [License](#license)  
+8. [Additional README/Documentation](#additional-readme--documentation)
 
 ---
 
@@ -194,6 +196,84 @@ This project is provided under an open-source license of your choice (e.g., MIT,
 
 ---
 
+## Additional README / Documentation
+
+Below is a concise **README/Documentation** covering core points of the Multi-Agentic Real Estate Chatbot, along with instructions for resending this document.
+
+---
+
+### Multi-Agentic Real Estate Chatbot
+
+#### 1. Introduction
+
+This chatbot offers property issue detection and tenancy-related advice, leveraging AI-driven logic. It comprises:
+- **Backend**: FastAPI and Python  
+- **Frontend**: Next.js (TypeScript) for the user interface  
+- **AI Services**: Google PaLM API for image-driven analysis  
+- **Deployment Options**: Dockerized backend, deployable on Render or similar cloud platforms; frontend deployable on Vercel
+
+---
+
+#### 2. Tools/Technologies Used
+
+1. **FastAPI (Python)**: Provides REST endpoints to handle user requests.  
+2. **Next.js (TypeScript)**: Frontend for user interaction and chat interface.  
+3. **Docker**: Containerizes the FastAPI backend for consistent deployment.  
+4. **Google PaLM API**: Processes images (upload + analysis) and advanced text generation (property/tenancy insights).  
+5. **Tailwind CSS**: For styling the Next.js app quickly and consistently.
+
+---
+
+#### 3. Logic Behind Agent Switching
+
+- **Property Agent**: Activated whenever a user uploads an image (or continues a discussion about property damage). It analyzes images for property issues like mold, cracks, or water damage.  
+- **Tenancy Agent**: Activated when no file is provided. This agent handles legal/tenancy questions, referencing RAG (Retrieval-Augmented Generation) for location-specific or previously fetched knowledge.
+
+Essentially:
+1. If an **image** is included, route to **Property Agent**.  
+2. If **no image** is included, route to **Tenancy Agent** (unless the conversation is a follow-up to a property discussion).
+
+---
+
+#### 4. How Image-Based Issue Detection Works
+
+1. **User Uploads an Image**: The frontend sends the image to the FastAPI backend.  
+2. **FastAPI** calls **Google’s PaLM API** to upload and process the file, then requests an AI-driven analysis.  
+3. **Property Agent** forms a prompt describing the property context and queries the AI model for potential issues, e.g., mold spots, cracks, broken fixtures.  
+4. **Short, Actionable Answer**: The response is limited to around 100 words, providing quick, targeted advice.
+
+---
+
+#### 5. Use Case Examples
+
+1. **Landlord/Tenant Disputes**: User queries about deposit refunds or lease terms, Tenancy Agent returns legal guidelines or steps to resolve.  
+2. **Home Damage**: User uploads pictures of water damage or wall cracks; Property Agent returns probable cause and recommended repairs.  
+3. **Maintenance Questions**: E.g., “The sink is leaking. What should I do next?” The bot can guide them on next steps, referencing prior context.  
+4. **Mold Identification**: The user snaps a photo of mold on a wall, gets quick advice on cleaning or professional help.
+
+---
+
+#### 6. Deadline
+
+- **Deadline:** All tasks must be completed **48 hours** after receiving this document.
+
+---
+
+#### 7. Resending This Document
+
+When you resend or submit this document, please **include** the following information:
+
+1. **THE TOOL USED**: Which AI / cloud / container service you utilized.  
+2. **The Place Where It Is Deployed**: Provide the URL or deployment environment (e.g., Vercel domain, Render link).  
+3. **Steps to View the Bot (if there is code)**: Short instructions on how someone can clone and run it, or how they can try it online.  
+4. **A Small Video of How the Bot Works** (Google Drive link, accessible to all): Demonstrate key features, e.g., uploading an image or asking a tenancy question.
+
+---
+
+**Thank you!** You now have a high-level overview of the Multi-Agentic Real Estate Chatbot, the logic behind agent switching, image-based detection flow, and use-case examples.
+
+---
+
 ## Contact
 
 If you have questions or issues:
@@ -201,6 +281,5 @@ If you have questions or issues:
 - **GitHub Issues**: [Open an issue](https://github.com/your-username/Multi-Agentic-Real-Estate-Chatbot/issues).  
 - **Contributions**: Feel free to open pull requests.
 
----
-
 **Enjoy your Multi-Agentic Real Estate Copilot!**
+```
